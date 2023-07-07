@@ -1,0 +1,47 @@
+To retrieve all users' data using the `getId()` function and display them in a new window, you can modify the existing code. Here's an updated version:
+
+```javascript
+function getAllUsersData() {
+  var usersRef = firebase.database().ref('data');
+  usersRef.once('value').then(function(snapshot) {
+    var users = snapshot.val();
+    var userData = '';
+    for (var key in users) {
+      if (users.hasOwnProperty(key)) {
+        var user = users[key];
+        userData += 'Name: ' + user.name + '<br>';
+        userData += 'Email: ' + user.email + '<br>';
+        userData += 'Password: ' + user.password + '<br><br>';
+      }
+    }
+    var newWindow = window.open('', '_blank');
+    newWindow.document.write('<html><head><title>User Data</title></head><body>');
+    newWindow.document.write('<h1>All Users Data</h1>');
+    newWindow.document.write(userData);
+    newWindow.document.write('</body></html>');
+    newWindow.document.close();
+  }).catch(function(error) {
+    console.log('Error retrieving users data: ', error);
+  });
+}
+```
+
+In this updated code, a new function called `getAllUsersData()` is defined. It retrieves the users' data from the Firebase Realtime Database, constructs an HTML string (`userData`) containing the information for each user, and then opens a new window to display the data.
+
+Here's how the function works:
+
+1. The `firebase.database().ref('data')` statement creates a reference to the "data" node in the database.
+2. The `once('value')` function is used to fetch the data from the specified database reference.
+3. Inside the `.then()` block, the retrieved data is stored in the `users` variable.
+4. A loop is used to iterate over each user's data. The `userData` string is constructed by concatenating the name, email, and password for each user.
+5. The `window.open('', '_blank')` statement opens a new blank window.
+6. The `newWindow.document.write()` statements are used to write the HTML content to the new window. It includes a title, a heading, and the `userData` string containing the users' data.
+7. Finally, the `newWindow.document.close()` statement is used to close the writing stream and complete the rendering of the new window.
+
+To trigger this function and view the users' data in a new window, you can call `getAllUsersData()` from any event or function within your application. For example, you can add a button to your HTML markup and assign the `getAllUsersData()` function as its `onclick` event handler:
+
+```html
+<button onclick="getAllUsersData()">View Users Data</button>
+```
+
+When this button is clicked, the `getAllUsersData()` function will be called, and a new window will open displaying the users' data retrieved from the Firebase Realtime Database.
